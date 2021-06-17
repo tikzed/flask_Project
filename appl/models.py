@@ -1,8 +1,7 @@
 from py2neo.ogm import GraphObject, Property,RelatedFrom, RelatedTo, Model, Repository
-from flask_login import UserMixin
-from appl.app import login_manager, graph
+from appl.app import login_manager,url,username
 from datetime import datetime
-repo = Repository("bolt://neo4j@localhost:7687", password="123")
+repo = Repository(url, username=username, password="123")
 
 
 

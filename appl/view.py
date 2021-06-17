@@ -1,8 +1,7 @@
-from flask import Flask, render_template, redirect, session, url_for, flash, request
-from appl.acccount_serv import create_user, login_userr,find_user,verify_hash
+from flask import render_template, redirect, url_for, flash, request
+from appl.acccount_serv import create_user, verify_hash
 from appl.app import app,graph
 from flask_login import current_user, login_user, logout_user, login_required
-from appl.movie import create_movie,add_movie
 from appl.models import repo,Movie,Actor,User,Director,Genre
 from werkzeug.urls import url_parse
 from random import randint

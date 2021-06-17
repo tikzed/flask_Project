@@ -5,7 +5,8 @@ import os
 app = Flask(__name__, template_folder='temp')
 username = "neo4j"
 password = "123"
-url = f'bolt://{username}:{password}@localhost:7687'
+url = os.environ.get('GRAPHENEDB_URL', 'http://localhost:7474')
+graph = Graph(url + '/db/data/', username=username, password=password)
 graph = Graph(url)
 app.secret_key = os.urandom (24)
 login_manager = LoginManager()
