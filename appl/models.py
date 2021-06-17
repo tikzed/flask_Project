@@ -1,7 +1,7 @@
 from py2neo.ogm import GraphObject, Property,RelatedFrom, RelatedTo, Model, Repository
 from appl.app import login_manager,url,username
 from datetime import datetime
-repo = Repository(url, username=username, password="123")
+repo = Repository(url)
 
 
 
