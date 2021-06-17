@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block main_content %}
+{% for mov in movie %}
+    <div class="movie">
+        <a href={{ url_for('movie_page', id=mov.show_id) }}>{{ mov.title }}</a>
+        <a>{{ mov.description}}</a>
+    </div>
+   {% endfor %}
+{% endblock %}

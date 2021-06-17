@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block main_content %}
+    <div class="movie">
+        <a>{{ movie.title }}</a>
+        <a>{{ movie.cast }}</a>
+        <a>{{ movie.country }}</a>
+        <a>{{ movie.release_year }}</a>
+        <a>{{ movie.description}}</a>
+    <form action="{{ url_for('movie_page', id=movie.show_id) }}" method="post">
+                <input type="submit" name= "form" value="Like" />
+    </form>
+    </div>
+{% endblock %}
