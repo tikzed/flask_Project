@@ -9,5 +9,8 @@
     <form action="{{ url_for('movie_page', id=movie.show_id) }}" method="post">
                 <input type="submit" name= "form" value="Like" />
     </form>
+    <form action="{{ url_for('personal_rec', id=movie.show_id) }}" method="post">
+                <input type="submit" name= "form" value="Recommend" />
+    </form>
     </div>
 {% endblock %}

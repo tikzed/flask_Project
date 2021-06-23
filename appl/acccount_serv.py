@@ -1,4 +1,4 @@
-from appl.app import graph
+from appl.appr import graph
 from typing import Optional
 from passlib.handlers.sha2_crypt import sha512_crypt as crypto
 from appl.models import User

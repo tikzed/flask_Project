@@ -1,8 +1,8 @@
 from flask import render_template, redirect, url_for, flash, request
-from appl.acccount_serv import create_user, verify_hash
-from appl.app import app,graph
+from acccount_serv import create_user, verify_hash
+from appr import app,graph
 from flask_login import current_user, login_user, logout_user, login_required
-from appl.models import repo,Movie,Actor,User,Director,Genre
+from models import repo,Movie,Actor,User,Director,Genre
 from werkzeug.urls import url_parse
 from random import randint
 
@@ -14,7 +14,7 @@ def index():
         return redirect(url_for('login'))
     movie = list()
     q = list()
-    while len(q) < 5:
+    while len(q) < 10:
         b = randint(1,4364)
         if not b in q:
             q.append(b)
@@ -39,6 +39,8 @@ def register_post():
     if not name or not email or not password or not confirm:
         flash("Please populate all the registration fields", "error")
         return render_template("register.html", name=name, email=email, password=password, confirm=confirm)
+    if repo.match(User, email).first() != None:
+        flash("user already exists")
     if password != confirm:
         flash("Passwords do not match")
         return render_template("register.html", name=name, email=email)
@@ -106,43 +108,46 @@ def recomend():
     for q in b.rated_in:
         a1.append(q.show_id)
         dir = repo.match(Director, q.director).first()
-        for mov in dir.directed:
+        if dir != None:
+            for mov in dir.directed:
+                if not mov.show_id in a1:
+                    a1.append(mov.show_id)
+                    a.append(mov)
+        if type(q.cast) != float:
+            for cast in q.cast.split(', '):
+                dir = repo.match(Actor, cast).first()
+                for mov in dir.acted_in:
+                    if not mov.show_id in a1:
+                        a1.append(mov.show_id)
+                        a.append(mov)
+    return render_template("recomend.html",movie = a)
+
+
+@login_required
+@app.route('/personal_rec/<id>', methods=['post'])
+def personal_rec(id):
+    b = repo.match(Movie, id).first()
+    a = list()
+    a1 = list()
+    a1.append(b.show_id)
+    dir = repo.match(Director, b.director).first()
+    for mov in dir.directed:
+        if not mov.show_id in a1:
+            a1.append(mov.show_id)
+            a.append(mov)
+    for cast in b.cast.split(', '):
+        dir = repo.match(Actor, cast).first()
+        for mov in dir.acted_in:
             if not mov.show_id in a1:
                 a1.append(mov.show_id)
                 a.append(mov)
-        i = 0
-        for cast in mov.cast.split(', '):
-            if i == 3:
-                break
-            dir = repo.match(Actor, cast).first()
-            for mov in dir.acted_in:
-                if not mov.show_id in a1:
-                    a1.append(mov.show_id)
-                    a.append(mov)
-            i+=1
-        for cast in mov.genre.split(', '):
-            i = 0
-            dir = repo.match(Genre, cast).first()
-            for mov in dir.genre_in:
-                if i == 3:
-                    break
-                if not mov.show_id in a1:
-                    a1.append(mov.show_id)
-                    a.append(mov)
-                i += 1
-
-    result= list()
-    q = list()
-    count = 10
-    if len(a)<10:
-        count = len(a)
-    while len(q) < count:
-        b = randint(0, count-1)
-        if not b in q:
-            q.append(b)
-    for i in q:
-        result.append(a[i])
-    return render_template("recomend.html",movie = result)
+    for cast in b.genre.split(', '):
+        dir = repo.match(Genre, cast).first()
+        for mov in dir.genre_in:
+            if not mov.show_id in a1:
+                a1.append(mov.show_id)
+                a.append(mov)
+    return render_template("recomend.html",movie= a)
 
 
 

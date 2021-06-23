@@ -1,5 +1,5 @@
-from appl.app import graph
-from appl.models import Actor,Movie,Genre,Director,repo
+from appr import graph
+from models import Actor,Movie,Genre,Director,repo
 import pandas as pd
 
 
@@ -32,21 +32,16 @@ def add_movie():
         movie.director = el['director']
         movie.genre = el['listed_in']
         graph.create(movie)
-        if type(movie.cast) != float:
-            i = 0
-            for ac in movie.cast.split(', '):
-                if i == 3:
-                    break
-                i+=1
-                acto = repo.match(Actor, ac).first()
-                if acto != None:
-                    acto.acted_in.add(movie)
-                    graph.push(acto)
-                else:
-                    actor = Actor()
-                    actor.name = ac
-                    actor.acted_in.add(movie)
-                    graph.create(actor)
+        for ac in movie.cast.split(', '):
+            acto = repo.match(Actor, ac).first()
+            if acto != None:
+                acto.acted_in.add(movie)
+                graph.push(acto)
+            else:
+                actor = Actor()
+                actor.name = ac
+                actor.acted_in.add(movie)
+                graph.create(actor)
         director = repo.match(Director, movie.director).first()
         if director != None:
             director.directed.add(movie)
